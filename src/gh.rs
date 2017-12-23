@@ -1,7 +1,8 @@
-use graphics::types::Vec2d;
-
 use std::ptr;
 use std::fmt;
+
+use graphics::types::Vec2d;
+use rand;
 
 #[derive(Debug)]
 /// Node in a circular doubly linked list
@@ -42,7 +43,8 @@ impl Vertex{
     /// Test if the vertex is inside the polygon
     pub fn is_inside(&self, poly: &CPolygon)->bool{
         let mut w = 0;
-        let infinity = [10000000., self.pt[1]];
+
+        let infinity = [-100000. - (rand::random::<f64>() % 100.), -100000. - (rand::random::<f64>() % 100.)];
 
         for q in poly.iter(){
             unsafe{
@@ -214,8 +216,6 @@ impl CPolygon{
 
                             match intersect(s_pt, s_next_pt, c_pt, c_next_pt){
                                 Some((i, alpha_s, alpha_c)) => {
-                                    println!("INTER {}", s.as_ref().unwrap());
-
                                     let mut is = Vertex::new(i, alpha_s, true, false, false);
                                     let mut ic = Vertex::new(i, alpha_c, true, false, false);
                                     is.as_mut().unwrap().neighbour = ic;
