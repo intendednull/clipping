@@ -40,6 +40,18 @@ impl Vertex{
         ptr
     }
 
+    pub fn clone(vertex: *mut Vertex)->*mut Self{
+        unsafe{
+            Self::new(
+                vertex.as_ref().unwrap().pt,
+                vertex.as_ref().unwrap().alpha,
+                vertex.as_ref().unwrap().inter,
+                vertex.as_ref().unwrap().entry,
+                vertex.as_ref().unwrap().checked
+            )
+        }
+    }
+
     /// Test if the vertex is inside the polygon
     pub fn is_inside(&self, poly: &CPolygon)->bool{
         let mut w = 0;
@@ -177,13 +189,28 @@ impl CPolygon{
         ve
     }
 
-    /// Return the polygon points as a list of points
+    /// Return the polygon points as a list of points, clear consecutive equals points
     pub fn points(&self)->Vec<Vec2d>{
         let mut poly = vec!();
 
         for vertex in self.iter(){
             unsafe{
-                poly.push(vertex.as_ref().unwrap().pt);
+                let pt = vertex.as_ref().unwrap().pt;
+                if vertex == self.fst{
+                    poly.push(pt);
+                }else{
+                    if vertex == self.fst.as_ref().unwrap().prev{
+                        if self.fst.as_ref().unwrap().pt != pt{
+                            poly.push(pt);
+                        }
+                    }else{
+                        let prev = vertex.as_ref().unwrap().prev.as_ref().unwrap().pt;
+
+                        if prev != pt{
+                            poly.push(pt);
+                        }
+                    }
+                }
             }
         }
 
@@ -262,15 +289,15 @@ impl CPolygon{
         while self.unprocessed(){
             unsafe{
                 let mut curr = self.first_intersect();
-                let mut clipped = vec!();
-                clipped.push(curr.as_ref().unwrap().pt);
+                let mut clipped = CPolygon::new();
+                clipped.add(Vertex::clone(curr));
 
                 loop{
                     curr.as_mut().unwrap().set_checked();
                     if curr.as_ref().unwrap().entry{
                         loop {
                             curr = curr.as_ref().unwrap().next;
-                            clipped.push(curr.as_ref().unwrap().pt);
+                            clipped.add(Vertex::clone(curr));
                             if curr.as_ref().unwrap().inter{
                                 break;
                             }
@@ -278,7 +305,7 @@ impl CPolygon{
                     }else{
                         loop {
                             curr = curr.as_ref().unwrap().prev;
-                            clipped.push(curr.as_ref().unwrap().pt);
+                            clipped.add(Vertex::clone(curr));
                             if curr.as_ref().unwrap().inter{
                                 break;
                             }
@@ -291,7 +318,7 @@ impl CPolygon{
                     }
                 }
 
-                list.push(clipped);
+                list.push(clipped.points());
             }
         }
 
