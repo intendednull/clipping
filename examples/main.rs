@@ -3,8 +3,9 @@ extern crate graphics;
 extern crate glutin_window;
 extern crate opengl_graphics;
 extern crate rand;
+extern crate clipping;
 
-mod gh;
+use clipping::gh;
 
 use piston::window::WindowSettings;
 use piston::event_loop::*;
