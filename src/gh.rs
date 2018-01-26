@@ -30,7 +30,7 @@ impl Vertex{
             inter: inter,
             checked: checked
         });
-        let mut ptr = Box::into_raw(vertex);
+        let ptr = Box::into_raw(vertex);
 
         unsafe{
             ptr.as_mut().unwrap().next = ptr;
@@ -155,7 +155,7 @@ impl CPolygon{
             }
 
             vertex.as_mut().unwrap().next = curr;
-            let mut prev = curr.as_ref().unwrap().prev;
+            let prev = curr.as_ref().unwrap().prev;
             vertex.as_mut().unwrap().prev = prev;
             prev.as_mut().unwrap().next = vertex;
             curr.as_mut().unwrap().prev = vertex;
@@ -283,7 +283,7 @@ impl CPolygon{
         }
     }
 
-    fn phase_three(&mut self, poly: &mut CPolygon)->Vec<Vec<Vec2d>>{
+    fn phase_three(&mut self)->Vec<Vec<Vec2d>>{
         let mut list = vec!();
 
         while self.unprocessed(){
@@ -338,7 +338,7 @@ impl CPolygon{
     pub fn clip(&mut self, poly: &mut CPolygon, s_entry: bool, c_entry: bool)->Vec<Vec<Vec2d>>{
         self.phase_one(poly);
         self.phase_two(poly, s_entry, c_entry);
-        self.phase_three(poly)
+        self.phase_three()
     }
 
     pub fn union(&mut self, poly: &mut CPolygon)->Vec<Vec<Vec2d>>{
