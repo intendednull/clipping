@@ -1,28 +1,18 @@
-extern crate piston;
-extern crate graphics;
-extern crate glutin_window;
-extern crate opengl_graphics;
-extern crate rand;
+extern crate piston_window;
 extern crate clipping;
 
 use clipping::gh;
 
-use piston::window::WindowSettings;
-use piston::event_loop::*;
-use piston::input::*;
-use glutin_window::GlutinWindow as Window;
-use opengl_graphics::{ GlGraphics, OpenGL };
-use graphics::types::Vec2d;
+use piston_window::*;
 
-fn render(args: &RenderArgs, gl: &mut GlGraphics, poly_a: &Vec<Vec2d>, poly_b: &Vec<Vec2d>, poly_c: &Vec<Vec<Vec2d>>) {
-    use graphics::*;
+fn render<E: GenericEvent>(e: &E, gl: &mut PistonWindow, poly_a: &Vec<[f64; 2]>, poly_b: &Vec<[f64; 2]>, poly_c: &Vec<Vec<[f64; 2]>>) {
 
     const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 0.0];
     const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
     const RED:   [f32; 4] = [1.0, 0.0, 0.0, 1.0];
     const BLUE:  [f32; 4] = [0.0, 0.0, 1.0, 1.0];
 
-    gl.draw(args.viewport(), |c, gl|{
+    gl.draw_2d(e, |c, gl|{
         clear(BLACK, gl);
 
         let trans = c.transform.trans(0., 0.);
@@ -42,7 +32,7 @@ fn main() {
     let opengl = OpenGL::V3_2;
 
     // Create an Glutin window.
-    let mut window: Window = WindowSettings::new(
+    let mut window: PistonWindow = WindowSettings::new(
             "clipping",
             [200, 200]
         )
@@ -51,8 +41,7 @@ fn main() {
         .build()
         .unwrap();
 
-    let mut gl = GlGraphics::new(opengl);
-    let poly_a: Vec<Vec2d> = vec![[40., 34.], [200., 66.], [106., 80.], [120., 175.]];
+    let poly_a: Vec<[f64; 2]> = vec![[40., 34.], [200., 66.], [106., 80.], [120., 175.]];
     let poly_b = vec![[133., 120.], [80., 146.], [26., 106.], [40., 90.], [0., 53.], [80., 66.], [146., 0.]];
 
     let mut cp_a = gh::CPolygon::from_vec(&poly_a);
@@ -62,8 +51,6 @@ fn main() {
 
     let mut events = Events::new(EventSettings::new());
     while let Some(e) = events.next(&mut window) {
-        if let Some(r) = e.render_args() {
-            render(&r, &mut gl, &poly_a, &poly_b, &cp_ab);
-        }
+        render(&e, &mut window, &poly_a, &poly_b, &cp_ab);
     }
 }

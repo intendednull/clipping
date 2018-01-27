@@ -1,13 +1,12 @@
 use std::ptr;
 use std::fmt;
 
-use graphics::types::Vec2d;
 use rand;
 
 #[derive(Debug)]
 /// Node in a circular doubly linked list
 struct Vertex{
-    pt: Vec2d,
+    pt: [f64; 2],
     next: *mut Vertex,
     prev: *mut Vertex,
     neighbour: *mut Vertex,
@@ -19,7 +18,7 @@ struct Vertex{
 
 impl Vertex{
 
-    pub fn new(pt: Vec2d, alpha: f64, inter: bool, entry: bool, checked: bool)->*mut Self{
+    pub fn new(pt: [f64; 2], alpha: f64, inter: bool, entry: bool, checked: bool)->*mut Self{
         let vertex = Box::new(Self{
             pt: pt,
             next: ptr::null_mut(),
@@ -113,7 +112,7 @@ impl CPolygon{
     }
 
     /// Create a polygon from a list of points
-    pub fn from_vec(vec: &Vec<Vec2d>)->Self{
+    pub fn from_vec(vec: &Vec<[f64; 2]>)->Self{
         let mut poly = Self::new();
 
         for v in vec{
@@ -190,7 +189,7 @@ impl CPolygon{
     }
 
     /// Return the polygon points as a list of points, clear consecutive equals points
-    pub fn points(&self)->Vec<Vec2d>{
+    pub fn points(&self)->Vec<[f64; 2]>{
         let mut poly = vec!();
 
         for vertex in self.iter(){
@@ -283,7 +282,7 @@ impl CPolygon{
         }
     }
 
-    fn phase_three(&mut self)->Vec<Vec<Vec2d>>{
+    fn phase_three(&mut self)->Vec<Vec<[f64; 2]>>{
         let mut list = vec!();
 
         while self.unprocessed(){
@@ -335,21 +334,21 @@ impl CPolygon{
         list
     }
 
-    pub fn clip(&mut self, poly: &mut CPolygon, s_entry: bool, c_entry: bool)->Vec<Vec<Vec2d>>{
+    pub fn clip(&mut self, poly: &mut CPolygon, s_entry: bool, c_entry: bool)->Vec<Vec<[f64; 2]>>{
         self.phase_one(poly);
         self.phase_two(poly, s_entry, c_entry);
         self.phase_three()
     }
 
-    pub fn union(&mut self, poly: &mut CPolygon)->Vec<Vec<Vec2d>>{
+    pub fn union(&mut self, poly: &mut CPolygon)->Vec<Vec<[f64; 2]>>{
         self.clip(poly, false, false)
     }
 
-    pub fn intersection(&mut self, poly: &mut CPolygon)->Vec<Vec<Vec2d>>{
+    pub fn intersection(&mut self, poly: &mut CPolygon)->Vec<Vec<[f64; 2]>>{
         self.clip(poly, true, true)
     }
 
-    pub fn difference(&mut self, poly: &mut CPolygon)->Vec<Vec<Vec2d>>{
+    pub fn difference(&mut self, poly: &mut CPolygon)->Vec<Vec<[f64; 2]>>{
         self.clip(poly, false, true)
     }
 }
@@ -421,7 +420,7 @@ impl Iterator for CPolyIter{
 
 
 /// Test the intersection of two line and get the intersection point and alphas
-fn intersect(s1: Vec2d, s2: Vec2d, c1: Vec2d, c2: Vec2d)->Option<(Vec2d, f64, f64)>{
+fn intersect(s1: [f64; 2], s2: [f64; 2], c1: [f64; 2], c2: [f64; 2])->Option<([f64; 2], f64, f64)>{
     let den = (c2[1] - c1[1]) * (s2[0] - s1[0]) - (c2[0] - c1[0]) * (s2[1] - s1[1]);
 
     if den == 0.{
