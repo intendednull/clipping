@@ -6,6 +6,8 @@ description = "Efficient clipping of arbitrary polygons"
 readme = "readme.md"
 keywords = ["polygon", "clipping", "Greiner", "Hormann", "piston"]
 categories = ["games"]
+licence = "GPL-3.0+"
+license-file = "LICENCE"
 
 [dependencies]
 rand="*"
