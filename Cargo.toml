@@ -3,6 +3,9 @@ name = "clipping"
 version = "0.1.0"
 authors = ["nyradr <nyradr@protonmail.com>"]
 description = "Efficient clipping of arbitrary polygons"
+readme = "readme.md"
+keywords = ["polygon", "clipping", "Greiner", "Hormann", "piston"]
+categories = ["games"]
 
 [dependencies]
 rand="*"
