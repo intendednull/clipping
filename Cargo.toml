@@ -2,6 +2,7 @@
 name = "clipping"
 version = "0.1.0"
 authors = ["nyradr <nyradr@protonmail.com>"]
+description = "Efficient clipping of arbitrary polygons"
 
 [dependencies]
 rand="*"
