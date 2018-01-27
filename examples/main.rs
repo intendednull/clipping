@@ -1,7 +1,7 @@
 extern crate piston_window;
 extern crate clipping;
 
-use clipping::gh;
+use clipping::CPolygon;
 
 use piston_window::*;
 
@@ -44,8 +44,8 @@ fn main() {
     let poly_a: Vec<[f64; 2]> = vec![[40., 34.], [200., 66.], [106., 80.], [120., 175.]];
     let poly_b = vec![[133., 120.], [80., 146.], [26., 106.], [40., 90.], [0., 53.], [80., 66.], [146., 0.]];
 
-    let mut cp_a = gh::CPolygon::from_vec(&poly_a);
-    let mut cp_b = gh::CPolygon::from_vec(&poly_b);
+    let mut cp_a = CPolygon::from_vec(&poly_a);
+    let mut cp_b = CPolygon::from_vec(&poly_b);
 
     let cp_ab = cp_a.intersection(&mut cp_b);
 
