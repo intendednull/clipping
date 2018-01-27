@@ -12,7 +12,6 @@ use piston::event_loop::*;
 use piston::input::*;
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::{ GlGraphics, OpenGL };
-use graphics::polygon;
 use graphics::types::Vec2d;
 
 fn render(args: &RenderArgs, gl: &mut GlGraphics, poly_a: &Vec<Vec2d>, poly_b: &Vec<Vec2d>, poly_c: &Vec<Vec<Vec2d>>) {
@@ -27,8 +26,8 @@ fn render(args: &RenderArgs, gl: &mut GlGraphics, poly_a: &Vec<Vec2d>, poly_b: &
         clear(BLACK, gl);
 
         let trans = c.transform.trans(0., 0.);
-        //polygon(RED, &poly_a, trans, gl);
-        //polygon(BLUE, &poly_b, trans, gl);
+        polygon(RED, &poly_a, trans, gl);
+        polygon(BLUE, &poly_b, trans, gl);
 
         for clip in poly_c{
             //let trans = c.transform.rot_rad(-1.570796).trans(-200., 0.);
@@ -53,18 +52,18 @@ fn main() {
         .unwrap();
 
     let mut gl = GlGraphics::new(opengl);
-    let polyA: Vec<Vec2d> = vec![[40., 34.], [200., 66.], [106., 80.], [120., 175.]];
-    let polyB = vec![[133., 120.], [80., 146.], [26., 106.], [40., 90.], [0., 53.], [80., 66.], [146., 0.]];
+    let poly_a: Vec<Vec2d> = vec![[40., 34.], [200., 66.], [106., 80.], [120., 175.]];
+    let poly_b = vec![[133., 120.], [80., 146.], [26., 106.], [40., 90.], [0., 53.], [80., 66.], [146., 0.]];
 
-    let mut cpA = gh::CPolygon::from_vec(&polyA);
-    let mut cpB = gh::CPolygon::from_vec(&polyB);
+    let mut cp_a = gh::CPolygon::from_vec(&poly_a);
+    let mut cp_b = gh::CPolygon::from_vec(&poly_b);
 
-    let cpAB = cpA.intersection(&mut cpB);
+    let cp_ab = cp_a.intersection(&mut cp_b);
 
     let mut events = Events::new(EventSettings::new());
     while let Some(e) = events.next(&mut window) {
         if let Some(r) = e.render_args() {
-            render(&r, &mut gl, &polyA, &polyB, &cpAB);
+            render(&r, &mut gl, &poly_a, &poly_b, &cp_ab);
         }
     }
 }
