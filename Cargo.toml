@@ -11,4 +11,6 @@ license-file = "LICENSE"
 
 [dependencies]
 rand = "0.4.2"
+
+[dev.dependencies]
 piston_window = "0.75.0"
